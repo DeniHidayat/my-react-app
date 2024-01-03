@@ -2,39 +2,47 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import CardProduct from "../components/Fragments/CardProduct";
 import Button from "../components/Elements/Button";
 import Counter from "../components/Fragments/Counter";
+import { getProducts } from "../services/product.services";
 
-const products = [
-    {
-        id: 1,
-        name: "Nike",
-        image: "/images/shoes-1.jpg",
-        price: 1000000,
-        descripttion: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis ex minima aut omnis repellat impedit sunt eum quia commodi quis. Est quis pariatur omnis consequuntur animi ullam vitae vero quidem.`
-    },
-    {
-        id: 2,
-        name: "Adidas",
-        image: "/images/shoes-1.jpg",
-        price: 500000,
-        descripttion: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis ex minima aut omnis repellat impedit sunt eum quia commodi quis. Est quis pariatur `
-    },
-    {
-        id: 3,
-        name: "Puma",
-        image: "/images/shoes-1.jpg",
-        price: 2000000,
-        descripttion: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis ex minima aut omnis repellat impedit sunt eum quia commodi quis. Est quis pariatur omnis consequuntur `
-    },
-]
+// const products = [
+//     {
+//         id: 1,
+//         name: "Nike",
+//         image: "/images/shoes-1.jpg",
+//         price: 1000000,
+//         descripttion: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis ex minima aut omnis repellat impedit sunt eum quia commodi quis. Est quis pariatur omnis consequuntur animi ullam vitae vero quidem.`
+//     },
+//     {
+//         id: 2,
+//         name: "Adidas",
+//         image: "/images/shoes-1.jpg",
+//         price: 500000,
+//         descripttion: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis ex minima aut omnis repellat impedit sunt eum quia commodi quis. Est quis pariatur `
+//     },
+//     {
+//         id: 3,
+//         name: "Puma",
+//         image: "/images/shoes-1.jpg",
+//         price: 2000000,
+//         descripttion: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis ex minima aut omnis repellat impedit sunt eum quia commodi quis. Est quis pariatur omnis consequuntur `
+//     },
+// ]
 
 const email = localStorage.getItem("email");
 const ProductsPage = () => {
     const [cart, setCart] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
+    const [products, setProducts] = useState([]);
 
     useEffect (() => {
         setCart(JSON.parse(localStorage.getItem("cart")) || []);
     },[])
+
+    useEffect(() => {
+        getProducts((data) => {
+            setProducts(data);           
+        })
+    })
 
     useEffect(() => {
         if (cart.length > 0) {
@@ -44,7 +52,7 @@ const ProductsPage = () => {
             }, 0)
             setTotalPrice(sum);
             localStorage.setItem("cart", JSON.stringify(cart));        }
-    },[cart])
+    },[cart, products])
     const handleLogout = () => {
         localStorage.removeItem("email");
         localStorage.removeItem("password");
@@ -80,8 +88,8 @@ const ProductsPage = () => {
             {products.map((product) => (
                     <CardProduct key={product.id}>
                         <CardProduct.Header image={product.image} />  
-                        <CardProduct.Body name={product.name}>
-                            {product.descripttion}
+                        <CardProduct.Body name={product.title}>
+                            {product.description}
                         </CardProduct.Body>
                         <CardProduct.Footer price={product.price} id={product.id} handleAddToCart={handleAddToCart} />
                     </CardProduct>  
@@ -103,7 +111,7 @@ const ProductsPage = () => {
                             const product = products.find((product) => product.id === item.id); 
                             return (
                                 <tr key={item.id}>
-                                    <td>{product.name}</td>
+                                    <td>{product.title}</td>
                                     <td>{product.price.toLocaleString('id-ID', {style: 'currency', currency: 'IDR'})}</td>
                                     <td>{item.qty}</td>
                                     <td>{(product.price * item.qty).toLocaleString('id-ID', {style: 'currency', currency: 'IDR'})}</td>
