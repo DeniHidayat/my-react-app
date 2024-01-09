@@ -29,7 +29,6 @@ import { getUsername } from "../services/Auth.services";
 //     },
 // ]
 
-const token = localStorage.getItem("token");
 const ProductsPage = () => {
     const [cart, setCart] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
@@ -41,7 +40,12 @@ const ProductsPage = () => {
     },[])
 
     useEffect   (() => {
-        setUsername(getUsername(token));
+        const token = localStorage.getItem("token");
+        if(token) {
+            setUsername(getUsername(token));
+        } else {
+            window.location.href = "/login";
+        }
     }, [])
 
     useEffect(() => {
@@ -60,8 +64,7 @@ const ProductsPage = () => {
             localStorage.setItem("cart", JSON.stringify(cart));        }
     },[cart, products])
     const handleLogout = () => {
-        localStorage.removeItem("email");
-        localStorage.removeItem("password");
+        localStorage.removeItem("token");
         window.location.href = "/login";
     }
 
