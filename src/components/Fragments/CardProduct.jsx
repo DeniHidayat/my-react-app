@@ -46,7 +46,7 @@ const Footer = (props) => {
     const {price, handleAddToCart, id} = props;
     return  (
         <div className="flex items-center justify-between px-5 pb-5">
-            <span className="text-l font-bold text-white">{price.toLocaleString('id-ID', {style: 'currency', currency: 'IDR'})}</span>
+            <span className="text-l font-bold text-white">{price.toLocaleString('id-US', {style: 'currency', currency: 'USD'})}</span>
             <Button classname="bg-blue-600 text-ms" onClick={() => handleAddToCart(id)}>Add To Cart</Button>
         </div>        
     )
