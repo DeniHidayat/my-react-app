@@ -4,6 +4,7 @@ import Button from "../components/Elements/Button";
 import Counter from "../components/Fragments/Counter";
 import { getProducts } from "../services/product.services";
 import { getUsername } from "../services/Auth.services";
+import { useLogin } from "../hooks/useLogin";
 
 // const products = [
 //     {
@@ -33,20 +34,11 @@ const ProductsPage = () => {
     const [cart, setCart] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const [products, setProducts] = useState([]);
-    const [username, setUsername] = useState("");
+    const username = useLogin();
 
     useEffect (() => {
         setCart(JSON.parse(localStorage.getItem("cart")) || []);
     },[])
-
-    useEffect   (() => {
-        const token = localStorage.getItem("token");
-        if(token) {
-            setUsername(getUsername(token));
-        } else {
-            window.location.href = "/login";
-        }
-    }, [])
 
     useEffect(() => {
         getProducts((data) => {
